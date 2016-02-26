@@ -8,6 +8,7 @@ RUN  apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 514A2AD631A5
     && echo 'deb http://www.apache.org/dist/cassandra/debian 22x main' >> /etc/apt/sources.list.d/cassandra.list \
     && apt-get update && apt-get install -y --no-install-recommends ca-certificates wget cron curl \
     && apt-get install -y cassandra="$CASSANDRA_VERSION"
+RUN apt-get install -y vim
 COPY snapshot /etc/cron.hourly/
 RUN service cassandra stop
 ENTRYPOINT ["/sbin/init"]
