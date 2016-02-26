@@ -10,5 +10,4 @@ RUN  apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 514A2AD631A5
     && apt-get install -y cassandra="$CASSANDRA_VERSION"
 COPY snapshot /etc/cron.hourly/
 RUN service cassandra stop
-RUN service cron restart
-CMD ["/sbin/init"]
+ENTRYPOINT ["/sbin/init"]
