@@ -1,0 +1,18 @@
+#!/bin/bash
+
+for IP in $IPS ; do
+    LABEL="$(date +MON%m_DAY%d_HR%H)_$IP"
+    BACKUP_DIR="/var/backup/cassandra"
+    mkdir -p $BACKUP_DIR/$LABEL
+    TABLES=$(cqlsh $IP -e "use $KEYSPACE; describe tables")
+    [ $? -eq 1 ] && echo $IP not reachable && rm -rf $BACKUP_DIR/$LABEL && continue
+    CQLSH="CONSISTENCY QUORUM;"
+    for TABLE in $TABLES; do
+      CQLSH="$CQLSH copy $KEYSPACE.$TABLE to '$BACKUP_DIR/$LABEL/${TABLE}.csv';"
+    done
+    cqlsh $IP -e "$CQLSH"
+    cd $BACKUP_DIR
+    tar cvzf $LABEL.tar.gz $LABEL
+    rm -rf $LABEL
+    exit 0
+done
